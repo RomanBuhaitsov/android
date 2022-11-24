@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Task List</string>
+    <string name="name">name</string>
+    <string name="status">status</string>
+    <string name="data">data</string>
+    <string name="description">description</string>
+
+    <string name="name_1">Ktor Project</string>
+    <string name="name_2">Calculator</string>
+    <string name="name_3">Task List</string>
+
+    <string name="description_1">Ktor description</string>
+    <string name="description_2">Make Basic Calculator in Android Studio</string>
+    <string name="description_3">Make Task List Using Fragments</string>
+
+    <string name="data_1">No Data.</string>
+    <string name="data_2">+-*/</string>
+    <string name="data_3">Forgot to use fragments did almost everything with basic activity.</string>
+
+    <string name="status_1">Failed.</string>
+    <string name="status_2">Finished after deadline,</string>
+    <string name="status_3">Finished barely in time. It gets better.</string>
+
+</resources>
