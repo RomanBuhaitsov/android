@@ -28,7 +28,6 @@ class TaskAdapter(private val tasks: ArrayList<Task>) :
         holder.descriptionId.text=item.description
         holder.dataId.text=item.data
         holder.statusId.text=item.status
-
     }
 
     override fun getItemCount(): Int {
