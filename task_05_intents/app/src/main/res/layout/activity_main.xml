@@ -6,35 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ListView
-        android:id="@+id/items_id"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:orientation="vertical">-->
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:orientation="horizontal">-->
+        <Button
+            android:id="@+id/cartButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:backgroundTint="#0C0C0C"
+            android:text="🛒"
+            tools:ignore="TextContrastCheck" />
+
+        <ListView
+            android:id="@+id/items_id"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <!--        <LinearLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:orientation="horizontal">-->
 
 
+    <!--        </LinearLayout>-->
 
-<!--            <Button-->
-<!--                android:id="@+id/button"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:background="#4CAF50"-->
-<!--                android:text="Bucket"-->
-<!--                android:textAlignment="viewEnd"-->
-<!--                tools:ignore="TextContrastCheck" />-->
+    <!--        -->
 
-<!--        </LinearLayout>-->
-
-<!--        -->
-
-<!--    </LinearLayout>-->
+    <!--    </LinearLayout>-->
 </androidx.constraintlayout.widget.ConstraintLayout>
