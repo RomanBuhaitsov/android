@@ -8,22 +8,27 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
-class ItemActivity: AppCompatActivity()  {
+class ItemActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.item_activity)
 
         val bundle: Bundle? = intent.extras
-        val name = bundle?.get("item_name")
-        Toast.makeText(applicationContext, name.toString() , Toast.LENGTH_LONG).show()
+        val name = bundle?.getString("item_name")
+        val description = bundle?.getString("item_description")
+        val price = bundle?.getString("item_price")
+        Toast.makeText(applicationContext, name, Toast.LENGTH_LONG).show()
+        Toast.makeText(applicationContext, description, Toast.LENGTH_LONG).show()
+        Toast.makeText(applicationContext, price, Toast.LENGTH_LONG).show()
         val backButton = findViewById<Button>(R.id.backButton)
-        val itemName = findViewById<View>(R.id.itemName)
-        if(itemName is TextView){
-            itemName.text=name.toString().uppercase()
-            println("123$name")
-        }
-        backButton.setOnClickListener() {
+        val itemName = findViewById<View>(R.id.itemName) as TextView
+        val itemDescription = findViewById<View>(R.id.itemDescription) as TextView
+        val itemPrice = findViewById<View>(R.id.itemPrice) as TextView
+        itemName.text = name
+        itemPrice.text = price
+        itemDescription.text = description
+        backButton.setOnClickListener {
             intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }

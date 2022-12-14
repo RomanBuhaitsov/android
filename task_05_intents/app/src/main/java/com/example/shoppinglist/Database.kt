@@ -8,36 +8,62 @@ import io.realm.kotlin.query.RealmResults
 import io.realm.kotlin.types.ObjectId
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
+import org.jetbrains.annotations.PropertyKey
+import java.math.BigDecimal
 
 class Item : RealmObject {
     @PrimaryKey
     var name: String = ""
-    var category = ""
+    var category: Category? = null
     var description: String = ""
-    var price: Double = 0.0
+    var price: String = ""
+
+    constructor(
+        name: String,
+        category: Category?,
+        description: String,
+        price: String,
+    ) : this() {
+        this.name = name
+        this.category = category
+        this.description = description
+        this.price = price
+    }
+
+    constructor()
+
+    override fun toString(): String {
+        return name;
+    }
 }
 
-class Category : RealmObject {
+class Category() : RealmObject {
     var name: String = ""
-    var description = ""
+    var description: String = ""
+    constructor(name: String, description: String) : this() {
+        this.name=name
+        this.description=description
+    }
 }
 
 object Database {
-    private val configuration: RealmConfiguration =
-        RealmConfiguration.create(schema = setOf(Item::class))
-    val realm = Realm.open(configuration)
+    private val configuration = RealmConfiguration
+        .Builder(schema = setOf(Item::class, Category::class))
+        .deleteRealmIfMigrationNeeded().build()
+    private val realm = Realm.open(configuration)
 
     fun writeItem(
         name: String,
-        categoryName: String,
+        category: Category,
         description: String = "lorem ipsum",
-        price: Double,
+        price: String,
     ) {
         val item = Item().apply {
             this.name = name
             this.description = description
+            this.category = category
             this.price = price
-            this.category = categoryName
+            println("PRICE "+ price)
         }
 
         realm.writeBlocking {
@@ -67,6 +93,10 @@ object Database {
         }
     }
 
+    fun writeCategory(category: Category){
+        realm.writeBlocking { copyToRealm(category) }
+    }
+
     fun getAllItems(): RealmResults<Item> {
         return realm.query<Item>().find()
     }
@@ -75,11 +105,20 @@ object Database {
         return realm.query<Category>().find()
     }
 
-    suspend fun deleteAllItems() {
-        realm.write {
+    fun deleteAll() {
+        realm.writeBlocking {
             val query: RealmQuery<Item> = this.query<Item>()
             val results: RealmResults<Item> = query.find()
             delete(results)
         }
+        realm.writeBlocking {
+            val query: RealmQuery<Category> = this.query<Category>()
+            val results: RealmResults<Category> = query.find()
+            delete(results)
+        }
+    }
+
+    fun closeRealm() {
+        realm.close()
     }
 }
