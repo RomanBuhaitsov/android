@@ -1,0 +1,1 @@
+rootProject.name = "task_09_ktor_server"
