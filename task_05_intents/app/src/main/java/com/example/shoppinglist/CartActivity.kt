@@ -4,10 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import io.realm.kotlin.query.RealmResults
+import java.util.ArrayList
 
 class CartActivity: AppCompatActivity()  {
 
@@ -17,18 +17,18 @@ class CartActivity: AppCompatActivity()  {
         setContentView(R.layout.cart_activity)
 
         val bundle: Bundle? = intent.extras
-//        val name = bundle?.get("item_name")
-//
-//        Toast.makeText(applicationContext, name.toString() , Toast.LENGTH_LONG).show()
-//        val backButton = findViewById<Button>(R.id.backButton)
-//        val itemName = findViewById<View>(R.id.itemName)
-//        if(itemName is TextView){
-//            itemName.text=name.toString().uppercase()
-//            println("123$name")
-//        }
-//        backButton.setOnClickListener() {
-//            intent = Intent(this, MainActivity::class.java)
-//            startActivity(intent)
-//        }
+
+        val backButton = findViewById<Button>(R.id.backButton)
+        backButton.setOnClickListener {
+            intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+
+        val itemsNames: Array<String> = bundle?.getStringArrayList("items")?.toTypedArray() ?: arrayOf("")
+        val arrayAdapter: ArrayAdapter<String> =
+            ArrayAdapter(this, android.R.layout.simple_list_item_1, itemsNames)
+        val itemsList = findViewById<ListView>(R.id.cart_items)
+        itemsList.adapter = arrayAdapter
     }
+
 }

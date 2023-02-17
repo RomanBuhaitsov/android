@@ -2,6 +2,7 @@ package com.example.shoppinglist
 
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
+import io.realm.kotlin.ext.isManaged
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.query.RealmQuery
 import io.realm.kotlin.query.RealmResults
@@ -9,7 +10,26 @@ import io.realm.kotlin.types.ObjectId
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 import org.jetbrains.annotations.PropertyKey
+import org.json.JSONObject
+import org.json.JSONTokener
 import java.math.BigDecimal
+import java.net.URL
+
+class User: RealmObject {
+    @PrimaryKey
+    var id : Number = 0
+    var name: String = ""
+    var email: String = "name@example.com"
+
+    constructor(id: Number, name: String, email: String) : this(){
+        this.id = id
+        this.name=name
+        this.email=name
+    }
+
+    constructor()
+
+}
 
 class Item : RealmObject {
     @PrimaryKey
@@ -17,6 +37,7 @@ class Item : RealmObject {
     var category: Category? = null
     var description: String = ""
     var price: String = ""
+    var number = 1
 
     constructor(
         name: String,
@@ -35,6 +56,10 @@ class Item : RealmObject {
     override fun toString(): String {
         return name;
     }
+
+    operator fun component1(): Any {
+        return name;
+    }
 }
 
 class Category() : RealmObject {
@@ -46,15 +71,15 @@ class Category() : RealmObject {
     }
 }
 
-object Database {
-    private val configuration = RealmConfiguration
+class Database(
+    configuration: RealmConfiguration = RealmConfiguration
         .Builder(schema = setOf(Item::class, Category::class))
-        .deleteRealmIfMigrationNeeded().build()
-    private val realm = Realm.open(configuration)
-
+        .deleteRealmIfMigrationNeeded().build(),
+    private val realm: Realm = Realm.open(configuration)
+) {
     fun writeItem(
         name: String,
-        category: Category,
+        category: Category?,
         description: String = "lorem ipsum",
         price: String,
     ) {
@@ -63,12 +88,14 @@ object Database {
             this.description = description
             this.category = category
             this.price = price
-            println("PRICE "+ price)
         }
 
-        realm.writeBlocking {
-            copyToRealm(item)
-        }
+        try {
+                realm.writeBlocking {
+                println(item.name)
+                copyToRealm(item)
+            }
+        }catch (e: IllegalArgumentException){}
     }
 
     fun getItemsByTitle(name: String): List<Item> {
