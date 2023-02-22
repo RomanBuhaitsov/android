@@ -49,7 +49,7 @@ fun Route.payment(payments: PaymentRepo) {
         post("/create"){
             val payment = call.receive<Payment>()
             payments.paymentsList.add(payment)
-            call.respond(HttpStatusCode.OK, Response("New payment added."))
+             call.respond(HttpStatusCode.OK, Response("New payment added."))
         }
     }
 }

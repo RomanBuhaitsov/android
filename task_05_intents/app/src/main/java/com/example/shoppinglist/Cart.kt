@@ -3,35 +3,45 @@ package com.example.shoppinglist
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.ext.query
+import io.realm.kotlin.internal.interop.RealmCoreDuplicatePrimaryKeyValueException
 import io.realm.kotlin.query.RealmQuery
 import io.realm.kotlin.query.RealmResults
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
 
-object Cart{
+class Cart(activity: MainActivity) {
     private val configuration: RealmConfiguration = RealmConfiguration
-    .Builder(schema = setOf(Item::class, Category::class))
-    .deleteRealmIfMigrationNeeded().build()
+        .Builder(schema = setOf(Item::class, Category::class))
+        .deleteRealmIfMigrationNeeded().build()
     private val realm: Realm = Realm.open(configuration)
 
-    fun writeItem(
+
+    suspend fun writeItem(
         name: String,
         price: String,
-    ) {
+    ): Boolean {
         val item = Item().apply {
             this.name = name
             this.price = price
         }
 
         try {
-            realm.writeBlocking {
+            realm.write {
                 copyToRealm(item)
             }
-        } catch (_: IllegalArgumentException) {
-            if (getItemByTitle(name) != null)
-                item.number += 1
+        } catch (e: java.lang.Exception) {
+            if (e is RealmCoreDuplicatePrimaryKeyValueException ||
+                e is java.lang.IllegalArgumentException
+            ) {
+                realm.write {
+                    getItemByTitle(name)!!.number += 1
+                }
+
+            } else {
+                e.printStackTrace()
+                return false
+            }
         }
+        return true
+
     }
 
     private fun getItemByTitle(name: String): Item? {
@@ -42,13 +52,13 @@ object Cart{
         return realm.query<Item>().find()
     }
 
-    fun getItemsNames(): List<String>{
+    fun getItemsNames(): List<String> {
         return getAllItems().map { item: Item -> item.name }
 
     }
 
-    fun deleteAll() {
-        realm.writeBlocking {
+    suspend fun deleteAll() {
+        realm.write {
             val query: RealmQuery<Item> = this.query()
             val results: RealmResults<Item> = query.find()
             delete(results)
@@ -59,3 +69,7 @@ object Cart{
         realm.close()
     }
 }
+
+
+
+

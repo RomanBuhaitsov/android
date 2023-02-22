@@ -75,6 +75,7 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                     } else {
                         Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                        println(it.exception.toString())
                     }
                 }
         }

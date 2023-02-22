@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 class ItemActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.item_activity)
 
@@ -30,14 +30,25 @@ class ItemActivity : AppCompatActivity() {
         itemPrice.text = price
         itemDescription.text = description
         backButton.setOnClickListener {
-            intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            try{
+                intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            } catch (e: Exception){
+                e.printStackTrace()
+            }
+
         }
         addButton.setOnClickListener{
-            intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("item_name", name)
-            intent.putExtra("item_price", price)
-            startActivity(intent)
+            try{
+                intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("item_name", name)
+                intent.putExtra("item_price", price)
+                intent.putExtra("operation","add_to_cart")
+                startActivity(intent)
+            } catch (e: Exception){
+                e.printStackTrace()
+            }
+
         }
     }
 }

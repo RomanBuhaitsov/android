@@ -2,19 +2,11 @@ package com.example.shoppinglist
 
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
-import io.realm.kotlin.ext.isManaged
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.query.RealmQuery
 import io.realm.kotlin.query.RealmResults
-import io.realm.kotlin.types.ObjectId
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
-import org.jetbrains.annotations.PropertyKey
-import org.json.JSONObject
-import org.json.JSONTokener
-import java.math.BigDecimal
-import java.net.URL
-
 class User: RealmObject {
     @PrimaryKey
     var id : Number = 0
@@ -77,7 +69,7 @@ class Database(
         .deleteRealmIfMigrationNeeded().build(),
     private val realm: Realm = Realm.open(configuration)
 ) {
-    fun writeItem(
+    suspend fun writeItem(
         name: String,
         category: Category?,
         description: String = "lorem ipsum",
@@ -91,7 +83,7 @@ class Database(
         }
 
         try {
-                realm.writeBlocking {
+                realm.write {
                 println(item.name)
                 copyToRealm(item)
             }
@@ -106,7 +98,7 @@ class Database(
         return realm.query<Category>("name = $0", name).find()
     }
 
-    fun writeCategory(
+    suspend fun writeCategory(
         name: String,
         description: String = "lorem ipsum",
     ) {
@@ -115,13 +107,13 @@ class Database(
             this.description = description
         }
 
-        realm.writeBlocking {
+        realm.write {
             copyToRealm(item)
         }
     }
 
-    fun writeCategory(category: Category){
-        realm.writeBlocking { copyToRealm(category) }
+    suspend fun writeCategory(category: Category){
+        realm.write { copyToRealm(category) }
     }
 
     fun getAllItems(): RealmResults<Item> {
@@ -132,13 +124,13 @@ class Database(
         return realm.query<Category>().find()
     }
 
-    fun deleteAll() {
-        realm.writeBlocking {
+    suspend fun deleteAll() {
+        realm.write {
             val query: RealmQuery<Item> = this.query<Item>()
             val results: RealmResults<Item> = query.find()
             delete(results)
         }
-        realm.writeBlocking {
+        realm.write {
             val query: RealmQuery<Category> = this.query<Category>()
             val results: RealmResults<Category> = query.find()
             delete(results)
